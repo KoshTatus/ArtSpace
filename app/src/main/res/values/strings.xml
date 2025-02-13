@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">LR2</string>
+    <string name="galery">Galery</string>
+    <string name="previous">Previous</string>
+    <string name="leaning_tower_of_pisa">Leaning Tower of Pisa</string>
+    <string name="next">Next</string>
+    <string name="pisa_italy">Pisa, Italy</string>
+</resources>

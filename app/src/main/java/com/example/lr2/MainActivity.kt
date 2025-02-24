@@ -1,6 +1,5 @@
 package com.example.lr2
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -10,7 +9,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import java.io.Console
 
 data class Photo(
     val imageId: Int,
@@ -18,7 +16,10 @@ data class Photo(
     val location: String
 )
 
+
+
 class MainActivity : AppCompatActivity() {
+    private var currImage: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,28 +29,17 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        if (savedInstanceState != null) run {
+            currImage = savedInstanceState.getInt("currImage")
+            updateUI(currImage)
+        }
     }
 
-    private val imageIds: Array<Int> = arrayOf(
-        R.drawable.piza,
-        R.drawable.coliseum,
-        R.drawable.cremle
-    )
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
 
-    private val names: Array<Array<String>> = arrayOf(
-        arrayOf(
-            "Leaning Tower of Pisa",
-            "Pisa, Italy"
-        ),
-        arrayOf(
-            "Coliseum",
-            "Rome, Italy"
-        ),
-        arrayOf(
-            "Kremlin",
-            "Moscow, Russia"
-        )
-    )
+        outState.putInt("currImage", currImage)
+    }
 
     private val photos: List<Photo> = listOf(
         Photo(R.drawable.piza, "Leaning Tower of Pisa", "Pisa, Italy"),
@@ -58,22 +48,25 @@ class MainActivity : AppCompatActivity() {
         Photo(R.drawable.eifel, "Eifel Tower", "Paris, France")
     )
 
-    private var currImage: Int = 0
+    private fun updateUI(currId: Int){
+        val imageView = findViewById<ImageView>(R.id.imageView)
+        val nameView = findViewById<TextView>(R.id.textView2)
+        val locationView = findViewById<TextView>(R.id.textView3)
+        imageView.setImageResource(photos[currId].imageId)
+        nameView.text = photos[currId].name
+        locationView.text = photos[currId].location
+    }
 
     fun changeInfo(view: View){
         var direction = 1
         if (findViewById<Button>(view.id).text == "Previous")
             direction = -1
-        val imageView = findViewById<ImageView>(R.id.imageView)
-        val nameView = findViewById<TextView>(R.id.textView2)
-        val locationView = findViewById<TextView>(R.id.textView3)
+        println(currImage)
         currImage += direction
         if (currImage == -1)
-            currImage = 2
+            currImage = photos.size - 1
         if (currImage == photos.size)
             currImage = 0
-        imageView.setImageResource(photos[currImage].imageId)
-        nameView.text = photos[currImage].name
-        locationView.text = photos[currImage].location
+        updateUI(currImage)
     }
 }
